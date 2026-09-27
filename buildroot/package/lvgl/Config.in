@@ -1,0 +1,20 @@
+config BR2_PACKAGE_LVGL
+	bool "lvgl"
+	help
+	  LVGL v8 graphics library. Installs headers and a static library
+	  into the staging directory for application development.
+
+	  https://lvgl.io/
+
+if BR2_PACKAGE_LVGL
+
+config BR2_PACKAGE_LVGL_DEMO
+	bool "framebuffer test demos"
+	depends on BR2_USE_MMU
+	help
+	  Build /usr/bin/lvgl_demo with the official widgets, benchmark
+	  and stress demos. Uses a Linux framebuffer (default /dev/fb0).
+	  No window system is required. This display-only port does not
+	  register an input device.
+
+endif

@@ -31,6 +31,68 @@ defconfig sg2002_licheervnano_sd
 build_all
 ```
 
+## LVGL framebuffer demos
+
+SG200X 的两个 Buildroot 默认配置已启用 LVGL 8.3.11 和 framebuffer
+测试 demo。源码在后续构建时由 Buildroot 下载；正常 `build_all` 会将
+`lvgl_demo` 安装到根文件系统的 `/usr/bin/`。
+
+也可在 Buildroot menuconfig 的 `Target packages` →
+`Graphic libraries and applications (graphic/text)` → `Graphic libraries`
+中选择 `lvgl` 和 `framebuffer test demos`。
+
+配置好工程及交叉工具链后，先确认当前生效的 `buildroot/.config` 中有
+以下选项（修改 defconfig 不会自动更新已有的 `.config`）：
+
+```text
+BR2_PACKAGE_LVGL=y
+BR2_PACKAGE_LVGL_DEMO=y
+```
+
+如未启用，运行 `make -C buildroot menuconfig`，选择上述选项并保存。
+首次构建软件包：
+
+```sh
+make -C buildroot lvgl
+```
+
+如果此前已编译 LVGL，之后才启用 demo，必须强制重新配置；普通 make
+会沿用先前的 CMake 缓存和构建完成标记：
+
+```sh
+make -C buildroot lvgl-reconfigure
+```
+
+本工程启用了 Buildroot 的 per-package 目录，单独构建后的程序位于：
+
+```text
+buildroot/output/build/lvgl-8.3.11/lvgl_demo
+buildroot/output/per-package/lvgl/target/usr/bin/lvgl_demo
+```
+
+再执行完整构建，汇总到 `output/target` 并更新 rootfs 镜像：
+
+```sh
+make -C buildroot
+ls -l buildroot/output/target/usr/bin/lvgl_demo
+```
+
+在板端运行（默认使用 `/dev/fb0`）：
+
+```sh
+lvgl_demo widgets
+lvgl_demo benchmark
+lvgl_demo stress
+lvgl_demo widgets /dev/fb1
+```
+
+按 Ctrl+C 退出。需要内核及显示驱动提供可 mmap 的 Linux framebuffer；
+分辨率由设备读取，支持 packed truecolor 16/24/32 bpp。
+此移植用于显示测试，暂未注册触摸、鼠标或键盘输入设备。
+运行前请停止其他占用同一 framebuffer 的图形程序。
+LVGL 的静态库及头文件安装到 Buildroot staging 目录，应用须使用同一份
+`lv_conf.h`；配置位于 `buildroot/package/lvgl/lv_conf.h`。
+
 # build fail
 
 on some system, qt5svg or qt5base will build failed on first build, please retry command:
