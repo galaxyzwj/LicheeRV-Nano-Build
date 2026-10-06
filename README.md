@@ -1,4 +1,5 @@
 # LicheeRV-Nano-Build
+board wiki: https://wiki.sipeed.com/hardware/zh/lichee/RV_Nano/1_intro.html
 
 # download source
 
