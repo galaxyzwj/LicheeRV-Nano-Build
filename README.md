@@ -21,6 +21,25 @@ docker export licheervnano-build-ubuntu | sqfstar licheervnano-build-ubuntu.sqfs
 singularity shell -e licheervnano-build-ubuntu.sqfs
 ```
 
+如果执行 `singularity shell` 提示找不到 `singularity`，需要先在宿主机安装
+容器运行工具。可以安装 Apptainer，然后使用 `apptainer shell` 进入上述镜像。
+
+Deepin 25（amd64）可使用以下官方 Debian 安装包，安装时需要输入 sudo 密码：
+
+```bash
+wget -O /tmp/apptainer_1.5.4_amd64.deb https://github.com/apptainer/apptainer/releases/download/v1.5.4/apptainer_1.5.4_amd64.deb
+sudo apt-get install -y /tmp/apptainer_1.5.4_amd64.deb
+```
+
+安装完成后，在仓库的 `host/ubuntu` 目录执行：
+
+```bash
+apptainer shell -e licheervnano-build-ubuntu.sqfs
+```
+
+其他宿主系统或架构的安装方式请参考
+[Apptainer 官方安装文档](https://apptainer.org/docs/admin/main/installation.html)。
+
 # build it
 
 ```
